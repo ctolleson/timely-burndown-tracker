@@ -14,8 +14,8 @@ load_dotenv()
 class TimelySettings(BaseModel):
     """Runtime configuration sourced from environment variables."""
 
-    account_id: str = Field(alias="TIMELY_ACCOUNT_ID")
-    api_token: str = Field(alias="TIMELY_API_TOKEN")
+    account_id: str = Field(alias="TIMELY_ACCOUNT_ID", min_length=1)
+    api_token: str = Field(alias="TIMELY_API_TOKEN", min_length=1)
     base_url: str = Field(default="https://api.timelyapp.com/1.1")
     default_window_days: int = Field(default=30, ge=1, le=365)
 

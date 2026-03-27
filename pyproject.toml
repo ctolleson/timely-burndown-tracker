@@ -28,3 +28,6 @@ dev = [
 
 [project.scripts]
 timely-tracker = "timely_tracker.cli:app"
+
+[tool.setuptools.packages.find]
+include = ["timely_tracker", "timely_tracker.*"]

@@ -15,6 +15,22 @@ from .tracker import aggregate_rollups
 app = typer.Typer(add_completion=False, help="Generate Excel burndown reports from Timely data.")
 
 
+@app.callback()
+def main() -> None:
+    """Primary Typer entry point."""
+    # Acts as a group root so subcommands (like `export`) work.
+    return None
+
+
+def _parse_iso_date(value: Optional[str], param_name: str) -> Optional[date]:
+    if value is None:
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError as exc:  # pragma: no cover - Typer handles user messaging
+        raise typer.BadParameter(f"{param_name} must be in YYYY-MM-DD format.") from exc
+
+
 @app.command("export")
 def export_command(
     output: Path = typer.Option(
@@ -23,13 +39,13 @@ def export_command(
         "-o",
         help="Destination .xlsx file for the burndown report.",
     ),
-    since: Optional[date] = typer.Option(
+    since: Optional[str] = typer.Option(
         None,
-        help="Inclusive start date for pulling Timely events/forecasts (defaults to TIMELY_DEFAULT_WINDOW_DAYS).",
+        help="Inclusive start date (YYYY-MM-DD). Defaults to TIMELY_DEFAULT_WINDOW_DAYS lookback.",
     ),
-    upto: Optional[date] = typer.Option(
+    upto: Optional[str] = typer.Option(
         None,
-        help="Inclusive end date for pulling Timely events/forecasts (defaults to today).",
+        help="Inclusive end date (YYYY-MM-DD). Defaults to today when omitted.",
     ),
     prefix_len: int = typer.Option(4, help="Number of leading characters from each comment that define the task code."),
     include_forecasts: bool = typer.Option(
@@ -44,8 +60,10 @@ def export_command(
     """Export an Excel burndown report using Timely projects, events, and task budgets."""
 
     settings = TimelySettings.from_env()
-    resolved_since = settings.resolve_since(since)
-    resolved_upto = settings.resolve_upto(upto)
+    parsed_since = _parse_iso_date(since, "since")
+    parsed_upto = _parse_iso_date(upto, "upto")
+    resolved_since = settings.resolve_since(parsed_since)
+    resolved_upto = settings.resolve_upto(parsed_upto)
 
     typer.echo(
         f"Pulling Timely data from {resolved_since.isoformat()} through {resolved_upto.isoformat()}..."
@@ -81,9 +99,9 @@ def export_command(
     typer.echo(f"Report saved to {path}")
 
 
-def main() -> None:  # pragma: no cover - convenience entry point
+def run() -> None:  # pragma: no cover - convenience entry point
     app()
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    run()
