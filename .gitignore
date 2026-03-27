@@ -10,6 +10,7 @@ build/
 dist/
 *.egg-info/
 .pytest_cache/
+.idea/
 coverage.xml
 htmlcov/
 reports/*.xlsx
