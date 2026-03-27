@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=67", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "timely-burndown-tracker"
+version = "0.1.0"
+description = "CLI tool that syncs Timely projects, logged hours, and task budgets into an Excel burndown report."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [
+  {name = "Your Name", email = "you@example.com"}
+]
+dependencies = [
+  "requests>=2.31",
+  "python-dotenv>=1.0",
+  "pandas>=2.2",
+  "openpyxl>=3.1",
+  "typer>=0.12",
+  "pydantic>=2.6"
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.3",
+  "pytest>=8.1"
+]
+
+[project.scripts]
+timely-tracker = "timely_tracker.cli:app"
