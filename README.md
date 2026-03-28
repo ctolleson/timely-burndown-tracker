@@ -55,5 +55,6 @@ These sheets can be imported into Power BI or shared directly.
 ## Notes & Limitations
 
 - The tool currently relies on the Timely Forecasts API for task budgets. If you do not use forecasts, the Excel sheet will list logged hours but budget/remaining columns will be blank.
+- When forecasts are missing you can backfill budgets by running `scripts/apply_estimates.py`, which reads estimates from `Security Team Task Tracker v2.xlsx` and fills only the blank `Budget Hours` cells in `reports/timely-burndown.xlsx`.
 - Timely rate limiting is respected implicitly by paginating requests (200 records per page). For very large accounts consider adding sleep/retry logic.
 - OAuth tokens expire; refresh them before rerunning the report if you see 401 responses.
