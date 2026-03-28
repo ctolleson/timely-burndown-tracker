@@ -11,6 +11,9 @@ from pydantic import BaseModel, Field, ValidationError
 load_dotenv()
 
 
+DEFAULT_START_DATE = date(2025, 1, 1)
+
+
 class TimelySettings(BaseModel):
     """Runtime configuration sourced from environment variables."""
 
@@ -50,7 +53,7 @@ class TimelySettings(BaseModel):
     def resolve_since(self, since: Optional[date]) -> date:
         if since:
             return since
-        return date.today() - timedelta(days=self.default_window_days)
+        return DEFAULT_START_DATE
 
     def resolve_upto(self, upto: Optional[date]) -> date:
         if upto:
